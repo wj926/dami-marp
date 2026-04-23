@@ -4,17 +4,57 @@
 
 마크다운 한 장으로 세미나·논문 발표 수준의 일관된 슬라이드를 뽑아낼 수 있게 설계했습니다. 네이비 `h1` border-left, `■ • – »` 4단 불릿 위계, 우상단 로고, 고정 푸터, 논문 인용 렌더러까지 포함.
 
+---
+
+## 🆕 업데이트: Mermaid 도식 플로우 통합 (2026-04-23)
+
+`.flow-row` 유틸리티는 **가로 한 줄 파이프라인** 만 가능했습니다. 대각선·분기·피드백 루프 같은 복잡한 토폴로지는 표현할 수 없었는데, 이제 ```` ```mermaid ```` 코드블럭을 쓰면 `build.py` 가 빌드 타임에 `mmdc` 로 SVG 렌더 → DAMI 네이비 테마 적용 → data URI 로 슬라이드에 주입합니다.
+
+### 빌드 파이프라인에 어떻게 얹히는지
+
 <p align="center">
-  <img src="examples/ax-forward-plan/preview.png" width="45%" alt="ax-forward-plan 표지" />
-  <img src="examples/ax-survey-results/preview.png" width="45%" alt="ax-survey-results 표지" />
+  <img src="examples/mermaid-flowchart-demo/docs/build-pipeline.png" width="85%" alt="build pipeline with mermaid step" />
 </p>
+
+`{{cite:키}}` 치환 단계 바로 뒤에 Mermaid 블록 추출·렌더 단계가 추가됩니다. 최종 PDF 에는 벡터 SVG 로 박히므로 확대·축소해도 깨끗합니다.
+
+### 이제 되는 3가지 패턴
+
+**1. 선형 파이프라인** — `.flow-row` 로도 되지만 Mermaid 가 더 유연
+
 <p align="center">
-  <img src="examples/skill-ecosystem-roadmap/preview.png" width="45%" alt="skill-ecosystem-roadmap 표지" />
-  <img src="examples/llm-wiki-roadmap/preview.png" width="45%" alt="llm-wiki-roadmap 표지" />
+  <img src="examples/mermaid-flowchart-demo/docs/linear-pipeline.png" width="85%" alt="linear pipeline example" />
 </p>
+
+**2. 분기와 합류** — 한 노드에서 여러 경로로 갈라졌다 다시 합치는 구조
+
 <p align="center">
-  <img src="examples/mermaid-flowchart-demo/preview.png" width="45%" alt="mermaid-flowchart-demo 표지" />
+  <img src="examples/mermaid-flowchart-demo/docs/branch-merge.png" width="85%" alt="branch and merge example" />
 </p>
+
+**3. 피드백 루프** — 마지막 노드가 처음으로 돌아오는 사이클
+
+<p align="center">
+  <img src="examples/mermaid-flowchart-demo/docs/feedback-loop.png" width="60%" alt="feedback loop example" />
+</p>
+
+### 사용법 (한 줄)
+
+````markdown
+```mermaid
+flowchart LR
+  U[사용자] --> P[전처리]
+  P --> M[모델]
+  M --> C[캐시]
+  M --> F[폴백]
+  C --> O[응답]
+  F --> O
+```
+````
+
+사전 요구사항: `npm i -g @mermaid-js/mermaid-cli` (설치 섹션 참고).
+
+자세한 문법·라벨 작성 주의사항은 [SKILL.md](SKILL.md#mermaid-flowchart-임베드), 전체 데모 덱은 [examples/mermaid-flowchart-demo](examples/mermaid-flowchart-demo/).
 
 ---
 
