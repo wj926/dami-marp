@@ -398,7 +398,7 @@ section .callout.arrow::before {
   position: absolute;
   left: 12px;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(calc(-50% + 2px));   /* ➜ 글리프 광학 중심 보정 — 텍스트 baseline 과 시각 정렬 */
   color: var(--red);
   font-size: 1.4em;
   font-weight: 700;

@@ -24,18 +24,8 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import tomllib
 from pathlib import Path
-
-try:
-    import tomllib  # Python 3.11+
-except ModuleNotFoundError:  # pragma: no cover
-    try:
-        import tomli as tomllib  # type: ignore[no-redef]
-    except ModuleNotFoundError:
-        sys.exit(
-            "ERROR: TOML parser not found. "
-            "Use Python 3.11+, or `pip install tomli` on older Python."
-        )
 
 
 CITE_PATTERN = re.compile(r"\{\{cite:([a-zA-Z0-9_\-]+)\}\}")

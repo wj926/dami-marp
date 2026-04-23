@@ -263,6 +263,18 @@ MIT License — 자유롭게 fork, 수정, 재배포 가능. 다만 `assets/dami
 
 ---
 
+## 🆕 업데이트: 화살표 금지 + flow-box 구조 명문화 (2026-04-24 08:17)
+
+스킬 설명 덱 (`marp-skill-explainer`) 제작 중 발견된 이슈를 반영했습니다.
+
+- **`.callout.arrow` 사용 중단**: ➜ 아이콘이 본문 텍스트 baseline 과 미세하게 어긋나 시각적으로 뜨는 현상 해결이 어려워, 양식에서 **화살표 아이콘을 전면 제거**합니다. `.callout` 만 사용. CSS 규칙은 기존 덱 호환성 위해 유지하되 `patterns/building-large-decks.md` 의 유틸리티 목록에서는 제외.
+- **본문 내 `→` 글리프 금지**: inline code (0.88em) 와 본문 텍스트 (1em) 의 크기 차이로 baseline 이 맞지 않아 뜬 것처럼 보임. 자연어 (`에서`, `로`, `는`) 또는 `.flow-row` 의 자동 CSS 화살표로 대체.
+- **`.flow-box` 구조 규칙 명문화**: `<div class="header">` + `<div class="body">` 자식 구조가 **필수**. raw text 만 넣으면 padding 이 0 이라 텍스트 상단이 border 에 clip. 화살표는 `.flow-row > .flow-box:not(:first-child)::before` / `::after` 가 자동 생성하므로 수동 `→` 글리프 금지 (중복 렌더). 상세 내역은 `lessons.md` 의 `flow-box-structure` 섹션.
+- **테마 CSS 광학 중심 보정**: `.callout.arrow::before` 의 `transform: translateY` 에 `+2px` 보정 추가. 이 클래스는 deprecated 지만 기존 덱에 잔존 시 정렬 개선.
+- **`build.py` 의존성 단순화**: `tomllib` fallback 제거, Python 3.11+ 전용.
+
+---
+
 ## Author
 
 **이우진 (Woojin Lee)** · 동국대학교 컴퓨터·AI학과 DAMI Lab

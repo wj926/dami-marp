@@ -404,6 +404,37 @@ python3 .claude/skills/marp/bin/build.py ppt_generation/projects/<name>/slides.m
 ![bg right:40%](assets/photo.jpg)  <!-- 오른쪽 40% 배경 -->
 ```
 
+### `.flow-row` / `.flow-box` 올바른 구조 — `.header` + `.body` 필수
+
+`.flow-box` 는 **반드시 `<div class="header">` + `<div class="body">` 자식 구조**. raw text 만 넣으면 padding 이 0 이라 텍스트 상단이 box border 에 의해 clip 됨. **화살표는 CSS `::before`/`::after` 로 자동 생성**되므로 `<div class="flow-arrow">→</div>` 같은 수동 화살표 금지 (중복 렌더).
+
+```html
+<div class="flow-row">
+
+<div class="flow-box">
+<div class="header">1. 제목</div>
+<div class="body">
+
+- 본문 항목 A
+- 본문 항목 B
+
+</div>
+</div>
+
+<div class="flow-box">
+<div class="header">2. 제목</div>
+<div class="body">한 줄 본문도 OK</div>
+</div>
+
+</div>
+```
+
+- 각 태그 전후에 **빈 줄** (마크다운 내부 렌더 위해)
+- 박스 갯수 3~4개가 적정 (더 많으면 horizontal squish)
+- 짧은 한 줄 본문이면 `.body` 안에 텍스트만 써도 됨 (리스트 안 쓸 땐 빈 줄 생략 가능)
+
+(상세: [lessons.md](lessons.md#flow-box-structure))
+
 ### 수식 (KaTeX)
 ```markdown
 인라인: $E = mc^2$
