@@ -465,6 +465,40 @@ grep -nE '"|'\''' projects/<프로젝트>/slides.md \
 - 풀 (표지): `assets/dami_logo_full.png`
 - 파일명 유지해서 덮어쓰면 됨
 
+### Mermaid flowchart 임베드
+
+`.flow-row` 로 부족한 복잡한 topology (분기·합류·피드백 루프·트리) 는 **Mermaid flowchart** 로 해결한다. `build.py` 가 빌드 타임에 `mmdc` 로 SVG 렌더 후 data URI 로 슬라이드에 주입.
+
+**설치 (최초 1회)**:
+```bash
+npm i -g @mermaid-js/mermaid-cli   # nvm lts 환경에서
+```
+
+**사용법** — 슬라이드 본문에 그냥 code block 으로:
+````markdown
+```mermaid
+flowchart LR
+  U[사용자] --> P[전처리]
+  P --> M[모델]
+  M --> C[캐시]
+  M --> F[폴백]
+  C --> O[응답]
+  F --> O
+```
+````
+
+- `flowchart LR` (가로) / `flowchart TD` (세로) 지원. 다른 Mermaid 다이어그램 타입 (sequence, state, class 등) 은 렌더는 되지만 DAMI 테마 튜닝은 flowchart 만.
+- 테마 컬러·폰트는 [themes/mermaid-config.json](themes/mermaid-config.json) 에서 관리 (네이비 `#0b2c5a`, Pretendard).
+- CSS `.mermaid-embed` 래퍼가 slide 세로 한계(`max-height: 440px`) 를 강제하므로, 노드가 많으면 `flowchart TD` 는 자동 축소됨.
+
+**라벨 작성 주의** — Mermaid + Chromium SVG-in-img 렌더 경로에서 **박스 라벨 마지막 글자가 clip 될 수 있음**. 특히 `.` 로 끝나거나 영문 5~6자 단일 단어일 때. 상세: [lessons.md#mermaid-label-clip](lessons.md#mermaid-label-clip).
+
+- BAD: `[slides.md]`, `[built]`, `[mermaid 렌더]`
+- GOOD: `[마크다운]`, `[빌드 산출물]`, `[mermaid 렌더 후]`
+- 팁: 라벨 끝에 한글 또는 넓은 CJK 문자가 오도록 구성하면 안전.
+
+**예시 덱**: [temp_works/marp-theme-test/test5/mermaid-flowchart-demo.md](../../../temp_works/marp-theme-test/test5/mermaid-flowchart-demo.md) — 파이프라인/분기/루프 3가지 패턴.
+
 ---
 
 ## 언제 쓰면 좋은가

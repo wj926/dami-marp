@@ -12,6 +12,9 @@
   <img src="examples/skill-ecosystem-roadmap/preview.png" width="45%" alt="skill-ecosystem-roadmap 표지" />
   <img src="examples/llm-wiki-roadmap/preview.png" width="45%" alt="llm-wiki-roadmap 표지" />
 </p>
+<p align="center">
+  <img src="examples/mermaid-flowchart-demo/preview.png" width="45%" alt="mermaid-flowchart-demo 표지" />
+</p>
 
 ---
 
@@ -26,7 +29,8 @@
 | [`SKILL.md`](SKILL.md) | 슬라이드 작성 가이드 본문 (슬라이드 타입, 유틸리티, 인용 관리) |
 | [`lessons.md`](lessons.md) | 테마를 만들며 겪은 버그/삽질 기록 (PDF 렌더 불안정, flanking, 세로 정렬 등) |
 | [`patterns/`](patterns/) | 워크플로우 패턴 (예: 25장 넘는 큰 덱은 outline → chunk → subagent) |
-| [`examples/`](examples/) | 실제로 빌드해서 쓴 4개 덱 — `md` + `pdf` + `assets` 세트 |
+| [`themes/mermaid-config.json`](themes/mermaid-config.json) | Mermaid flowchart 테마 (DAMI 네이비, Pretendard) |
+| [`examples/`](examples/) | 실제로 빌드해서 쓴 5개 덱 — `md` + `pdf` + `assets` 세트 |
 
 ---
 
@@ -52,15 +56,18 @@
 
 ## 설치
 
-### 1. Marp CLI
+### 1. Marp CLI + Mermaid CLI
 
 ```bash
 # nvm 기반 권장
 nvm install --lts
 nvm use --lts
-npm i -g @marp-team/marp-cli
+npm i -g @marp-team/marp-cli @mermaid-js/mermaid-cli
 marp --version   # v4.x 확인
+mmdc --version   # v11.x 확인 (mermaid flowchart 쓸 때만 필요)
 ```
+
+> `mmdc` 는 ````mermaid```` 코드블럭을 쓰는 덱만 필요. 설치 안 해도 일반 덱은 빌드됨.
 
 ### 2. 한글 폰트 (Linux)
 
@@ -126,6 +133,7 @@ python3 bin/build.py examples/ax-forward-plan/ax-forward-plan.md
 | **ax-survey-results** | AX 전환 설문 결과 정리 — 차트 중심, `assets/charts/` 활용 | [md](examples/ax-survey-results/ax-survey-results.md) · [pdf](examples/ax-survey-results/ax-survey-results.pdf) |
 | **skill-ecosystem-roadmap** | Claude Code 스킬 생태계 로드맵 — 26장 분량 중형 덱 | [md](examples/skill-ecosystem-roadmap/skill-ecosystem-roadmap.md) · [pdf](examples/skill-ecosystem-roadmap/skill-ecosystem-roadmap.pdf) |
 | **llm-wiki-roadmap** | 연구 지식 QA 생태계 로드맵 — flow-row, callout, cols-2 종합 예시 | [md](examples/llm-wiki-roadmap/llm-wiki-roadmap.md) · [pdf](examples/llm-wiki-roadmap/llm-wiki-roadmap.pdf) |
+| **mermaid-flowchart-demo** | Mermaid 통합 기능 데모 — 파이프라인 / 분기·합류 / 피드백 루프 3가지 패턴 | [md](examples/mermaid-flowchart-demo/mermaid-flowchart-demo.md) · [pdf](examples/mermaid-flowchart-demo/mermaid-flowchart-demo.pdf) |
 
 ---
 
@@ -155,12 +163,13 @@ git clone https://github.com/wj926/dami-marp.git ~/.claude/skills/marp
 
 ## 로드맵
 
-### 🔴 High priority
+### ✅ Recently shipped
 
-- **SVG 화살표 헬퍼 (`bin/`)** — 현재 `.flow-row` 는 가로 화살표만 자동 생성. 대각선·U자·분기 연결 같은 복잡한 topology 를 위한 SVG overlay preprocessor 추가. 박스 ID + 연결 관계를 입력 받으면 빌드 시점에 SVG 를 슬라이드에 주입.
+- **Mermaid flowchart 통합** (2026-04-23) — `.flow-row` 로 부족했던 복잡한 topology (분기·합류·피드백 루프·트리) 를 ```mermaid``` 코드블럭으로 해결. `build.py` 가 `mmdc` 로 SVG 렌더 → DAMI 네이비 테마 적용 → data URI 로 슬라이드에 주입. 예제: [`mermaid-flowchart-demo`](examples/mermaid-flowchart-demo/). 알려진 이슈(라벨 끝 글자 clip)는 [lessons.md](lessons.md) 참고.
 
 ### 🟡 Medium priority
 
+- **Mermaid label clipping 완전 해결** — 현재 한글/마침표/짧은 영문 라벨 끝이 1~2px clip. 회피 가이드는 있지만 근본 해결 필요. 방향: SVG 를 data URI 대신 `.svg` 파일로 저장 + `<img src="file.svg">` 참조 (Chromium 의 독립 SVG rendering pipeline 경유).
 - **유틸리티 패턴 문서 (`patterns/`)** — `cols-2.md`, `callout.md`, `flow-row.md` 개별 가이드. 현재는 예제 덱이 레퍼런스 역할을 하지만, 패턴 재사용이 늘면 전용 문서가 필요.
 - **Pros/Cons · Before/After 양식** — `cols-2` 로도 되지만, 장점(초록 ✅) vs 단점(빨강 ✗) 같은 **대조 전용 클래스**가 있으면 연구 발표에서 자주 쓸 수 있음. `.pros-cons`, `.compare` 유틸리티 추가 예정.
 - **부분 수정 워크플로우** — 덱 한 슬라이드만 고치고 싶을 때 전체 재처리가 아니라 surgical edit 하는 패턴. 슬라이드 번호 + 변경 지점 명시 → Edit 도구로 타겟 수정, 빌드는 필요한 시점에만.
@@ -189,19 +198,21 @@ dami-marp/
 ├── lessons.md             # 빌드 버그 / 삽질 기록
 ├── refs.example.toml      # 논문 인용 metadata 예시
 ├── bin/
-│   └── build.py           # 인용 치환 + marp 빌드 래퍼
+│   └── build.py              # 인용 치환 + mermaid SVG 렌더 + marp 빌드 래퍼
 ├── themes/
-│   └── dami-lab.css       # 메인 테마 CSS
+│   ├── dami-lab.css          # 메인 테마 CSS
+│   └── mermaid-config.json   # Mermaid flowchart 테마 (네이비 + Pretendard)
 ├── assets/
-│   ├── dami_logo.png      # 심플 로고 (일반 슬라이드 우상단)
-│   └── dami_logo_full.png # 풀 로고 (표지용)
+│   ├── dami_logo.png         # 심플 로고 (일반 슬라이드 우상단)
+│   └── dami_logo_full.png    # 풀 로고 (표지용)
 ├── patterns/
 │   └── building-large-decks.md  # 25장 이상 덱 워크플로우
 └── examples/
     ├── ax-forward-plan/
     ├── ax-survey-results/
     ├── skill-ecosystem-roadmap/
-    └── llm-wiki-roadmap/
+    ├── llm-wiki-roadmap/
+    └── mermaid-flowchart-demo/
 ```
 
 ---
