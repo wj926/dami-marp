@@ -1,0 +1,23 @@
+# marp build artifacts
+*.built.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node (if local)
+node_modules/
+
+# pdftoppm preview scans (optional — remove this line if you want to commit them)
+pages/

@@ -1,0 +1,54 @@
+# ====================================================================
+# refs.toml — 논문 인용 중앙 관리
+# ====================================================================
+#
+# 이 파일은 슬라이드에서 사용하는 논문/레퍼런스를 한 곳에 모아두는
+# 단일 진실 원천(single source of truth)입니다.
+# 새 프로젝트를 시작할 때 이 파일을 복사해서 사용하세요:
+#
+#     cp .claude/skills/marp/refs.example.toml ppt_generation/projects/<내프로젝트>/refs.toml
+#
+# 슬라이드(slides.md)에서는 `{{cite:키}}` 형태로 참조합니다:
+#
+#     <div class="refs">
+#     [1] {{cite:rao2011}}
+#     </div>
+#
+# `.claude/skills/marp/bin/build.py slides.md` 로 빌드하면 placeholder가
+# 아래 항목으로 자동 치환되어 marp가 PDF/PPTX를 생성합니다.
+#
+# --------------------------------------------------------------------
+# 각 항목 구조
+# --------------------------------------------------------------------
+#   [키]                                  # 영소문자+숫자+밑줄만 (예: rao2011)
+#   authors = "저자명 (여러 명은 쉼표)"
+#   title   = "논문 제목"
+#   venue   = "저널/학회명"
+#   volume  = 43                         # 선택
+#   issue   = 3                          # 선택
+#   pages   = "303-315"                  # 선택
+#   year    = 2011
+#
+# 원하면 `raw = "전체 인용 문자열"` 한 줄로 대체도 가능 (그대로 쓰임).
+# --------------------------------------------------------------------
+
+[rao2011]
+authors = "Rao, R. V., Savsani, V. J., & Vakharia, D. P."
+title = "Teaching–learning-based optimization: A novel method for constrained mechanical design optimization problems"
+venue = "Computer-Aided Design"
+volume = 43
+issue = 3
+pages = "303–315"
+year = 2011
+
+[goodfellow2014]
+authors = "Goodfellow, I. J., Shlens, J., & Szegedy, C."
+title = "Explaining and Harnessing Adversarial Examples"
+venue = "ICLR"
+year = 2015
+
+[vaswani2017]
+authors = "Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., Kaiser, Ł., & Polosukhin, I."
+title = "Attention Is All You Need"
+venue = "NeurIPS"
+year = 2017

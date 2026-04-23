@@ -1,0 +1,475 @@
+/* @theme dami-lab */
+
+/*
+ * DAMI Lab (동국대학교 컴퓨터·AI학과) Marp 테마.
+ * Marp default 테마를 확장하여 네이비 h1 border-left, 불릿 위계(■ • – »),
+ * 우상단 코끼리 로고, 고정 푸터, 슬라이드 클래스 프리셋(title/toc/section/end) 제공.
+ *
+ * 사용법: slides.md 프론트매터에 `theme: dami-lab` 지정.
+ *        build.py 가 marp --theme-set 으로 자동 등록한다.
+ */
+
+@import 'default';
+
+/* ===== 디자인 토큰 ===== */
+:root {
+  --navy:    #0b2c5a;
+  --navy-d:  #071c3d;
+  --blue:    #1d4ed8;
+  --red:     #dc2626;
+  --green:   #16a34a;
+  --yellow:  #d97706;
+  --text:    #1f2937;
+  --muted:   #6b7280;
+  --border:  #e5e7eb;
+  --bg:      #ffffff;
+  --surface: #f6f8fc;
+}
+
+/* ===== 기본 슬라이드 ===== */
+/* !important 필수 — Marp의 default 테마 base가 background를 덮어쓰므로 */
+/* justify-content 도 !important 필수 — default 테마가 center로 걸어둠 */
+section {
+  font-family: 'Pretendard', 'Noto Sans KR', -apple-system, sans-serif;
+  font-size: 18px;
+  color: var(--text);
+  padding: 30px 56px 56px 68px !important;   /* top: h1 border-bottom 이 로고(y=20~66) 바로 아래에 오도록 30px */
+  line-height: 1.55;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  background: #ffffff !important;
+  display: flex !important;                   /* default 의 display: block + place-content: center 방지 */
+  flex-direction: column;
+  justify-content: flex-start !important;
+  place-content: flex-start !important;       /* default 의 place-content: safe center center 를 덮음 */
+}
+
+/* ===== 헤딩 위계 ===== */
+section h1 {
+  color: var(--navy);
+  font-size: 1.75em;
+  font-weight: 800;
+  margin: 0 0 10px 0;
+  padding: 0 0 6px 16px;
+  border-left: 6px solid var(--navy);
+  border-bottom: 2px solid var(--navy);
+  line-height: 1.1;
+}
+section h2 {
+  color: var(--text);
+  font-size: 1.1em;
+  font-weight: 800;
+  margin: 16px 0 6px 0;
+}
+section h2::before {
+  content: "■ ";
+  color: var(--navy);
+}
+section h3 {
+  color: var(--navy);
+  font-size: 0.95em;
+  font-weight: 700;
+  margin: 10px 0 4px 0;
+}
+
+/* ===== 불릿 위계: • → – → » ===== */
+section ul {
+  list-style: none;
+  padding-left: 4px;
+  margin: 4px 0 8px 0;
+}
+section ul li {
+  position: relative;
+  padding-left: 16px;
+  margin: 3px 0;
+}
+section ul li::before {
+  content: "•";
+  position: absolute;
+  left: 2px;
+  color: var(--navy);
+  font-weight: 700;
+}
+section ul ul { padding-left: 14px; margin: 2px 0; }
+section ul ul li::before { content: "–"; color: var(--muted); }
+section ul ul ul li { font-size: 0.85em; }   /* »  라인 전체 15.3px */
+section ul ul ul li::before { content: "»"; color: var(--muted); }
+
+/* ===== 강조 ===== */
+section strong { color: var(--navy); font-weight: 700; }
+section em { color: var(--muted); font-style: normal; }
+section code {
+  background: #f1f5f9;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 0.88em;
+  font-family: 'D2Coding', 'IBM Plex Mono', monospace;
+  color: var(--navy-d);
+}
+
+/* ===== 테이블 ===== */
+section table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 10px 0;
+  font-size: 0.9em;
+}
+section th {
+  background: var(--navy);
+  color: #fff;
+  padding: 8px 12px;
+  text-align: left;
+  font-weight: 700;
+}
+section td {
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--border);
+}
+section tr:nth-child(even) td { background: var(--surface); }
+
+/* ===== 수식 박스 ===== */
+section .katex-display {
+  margin: 10px 0;
+  padding: 10px 16px;
+  background: var(--surface);
+  border-left: 3px solid var(--navy);
+  border-radius: 4px;
+}
+
+/* ===== 인용 블록 ===== */
+section blockquote {
+  border-left: 4px solid var(--navy);
+  background: var(--surface);
+  margin: 10px 0;
+  padding: 8px 16px;
+  color: var(--text);
+  font-size: 0.95em;
+}
+
+/* ===== DAMI Lab 로고 (우상단 심플 코끼리) ===== */
+/* 경로는 slides.md 기준. 프로젝트 폴더에 assets/dami_logo.png 필수. */
+section::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  width: 56px;
+  height: 46px;
+  background: url('./assets/dami_logo.png') no-repeat center / contain;
+  z-index: 10;
+}
+
+/* ===== 논문 인용 (인용문 → 구분선 → 푸터) ===== */
+/* refs가 있는 슬라이드는 하단 공간 reserve */
+section:has(div.refs) {
+  padding-bottom: 130px;
+}
+section div.refs {
+  position: absolute;
+  left: 68px;
+  right: 56px;
+  bottom: 44px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.6em;
+  color: var(--muted);
+  line-height: 1.6;
+}
+section div.refs p { margin: 2px 0; }
+section div.refs strong { color: var(--text); font-weight: 600; }
+section div.refs em { color: var(--muted); font-style: italic; }
+
+/* ===== 푸터/페이지 번호 ===== */
+section footer {
+  color: var(--muted);
+  font-size: 0.68em;
+  left: 68px;
+  bottom: 16px;
+}
+section::after {
+  color: var(--muted);
+  font-size: 0.7em;
+  right: 40px;
+  bottom: 16px;
+}
+
+/* ==================================================== */
+/*  슬라이드 클래스 프리셋                                 */
+/* ==================================================== */
+
+/* ----- .title : 표지 (네이비 풀블리드 + 상하 흰 수평선) ----- */
+section.title {
+  background: #0b2c5a !important;
+  color: #fff;
+  padding: 0 !important;
+}
+section.title h1 {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: center;
+  color: #fff;
+  font-size: 2.8em;
+  font-weight: 800;
+  border: none;
+  border-top: 1.5px solid rgba(255,255,255,0.7);
+  border-bottom: 1.5px solid rgba(255,255,255,0.7);
+  padding: 36px 20px;
+  margin: 0;
+  line-height: 1.2;
+}
+/* 발표자/기관 (우하단, 흰 굵은) */
+section.title .author {
+  position: absolute;
+  right: 60px;
+  bottom: 70px;
+  text-align: right;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1em;
+  line-height: 1.4;
+}
+/* 날짜 (좌하단, 흰 얇은) */
+section.title .date {
+  position: absolute;
+  left: 60px;
+  bottom: 30px;
+  color: rgba(255,255,255,0.65);
+  font-size: 0.85em;
+}
+section.title header, section.title footer { display: none; }
+section.title::after { display: none; }  /* 표지에는 페이지 번호 없음 */
+/* 표지는 풀 로고 (DAMI Lab + 코끼리 + 서브텍스트) */
+section.title::before {
+  top: 32px;
+  right: 48px;
+  width: 130px;
+  height: 56px;
+  background-image: url('./assets/dami_logo_full.png');
+}
+
+/* ----- .toc : 목차 (숫자 + ■ 하위) ----- */
+section.toc h1 {
+  border-left: none;
+  padding-left: 0;
+  font-size: 2.4em;
+  font-weight: 800;
+  margin-bottom: 32px;
+}
+section.toc ol {
+  list-style: none;
+  counter-reset: tocitem;
+  padding: 0;
+  margin: 0;
+}
+section.toc ol > li {
+  counter-increment: tocitem;
+  font-size: 1.55em;
+  font-weight: 800;
+  color: var(--text);
+  padding: 0 0 4px 44px;
+  margin: 14px 0 0 0;
+  position: relative;
+}
+section.toc ol > li::before {
+  content: counter(tocitem) ".";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--text);
+  font-weight: 800;
+}
+section.toc ol ul {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0 0;
+}
+section.toc ol ul li {
+  font-size: 0.6em;
+  font-weight: 400;
+  color: var(--text);
+  padding-left: 18px;
+  margin: 2px 0;
+  position: relative;
+}
+section.toc ol ul li::before {
+  content: "■";
+  position: absolute;
+  left: 0;
+  color: var(--navy);
+  font-size: 0.85em;
+}
+
+/* ----- .section : 섹션 전환 (상단 63% 네이비 + 하단 37% 흰색) ----- */
+section.section {
+  background: #ffffff !important;
+  color: #fff;
+  padding: 0 !important;
+}
+section.section::before {
+  display: block !important;
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: auto;              /* base section::before의 width:56px 를 명시적으로 덮음 */
+  height: 63%;
+  background: #0b2c5a;
+  background-image: none;   /* base의 url(dami_logo.png) 을 확실히 제거 */
+  z-index: 1;
+}
+section.section h1 {
+  position: absolute;
+  left: 60px;
+  right: 60px;
+  bottom: 41%;
+  color: #fff;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: 2.8em;
+  font-weight: 800;
+  line-height: 1.1;
+  z-index: 2;
+}
+section.section footer { color: var(--muted); }
+
+/* ----- .end : 마지막 슬라이드 (Thank you) ----- */
+/* !important 필수 — base section의 justify-content: flex-start !important 에 덮이지 않도록 */
+section.end {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center !important;
+  align-items: center;
+  text-align: center;
+  padding: 48px 56px !important;
+}
+section.end h1 {
+  color: var(--text);
+  border: none;
+  padding: 0;
+  font-size: 3.6em;
+  font-weight: 800;
+  margin: 0;
+}
+
+/* ==================================================== */
+/*  도식화 유틸리티 (Diagram Utilities)                    */
+/* ==================================================== */
+
+/* ----- .cols-2 / .cols-3 : N분할 그리드 ----- */
+section .cols-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+  margin: 8px 0;
+}
+section .cols-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  align-items: start;
+  margin: 8px 0;
+}
+
+/* ----- .callout : 빨간 강조 박스 (핵심 관찰/경고용) ----- */
+section .callout {
+  border-left: 4px solid var(--red);
+  background: #fef2f2;
+  padding: 10px 14px;
+  margin: 8px 0;
+  border-radius: 0 4px 4px 0;
+  font-size: 0.95em;
+  color: var(--text);
+}
+section .callout strong { color: var(--red); }
+
+/* .callout.arrow : 앞에 빨간 화살표 아이콘 */
+section .callout.arrow {
+  position: relative;
+  padding-left: 40px;
+}
+section .callout.arrow::before {
+  content: "➜";
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--red);
+  font-size: 1.4em;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ----- .flow-box : 네이비 헤더 + 흰 본문 박스 ----- */
+/* overflow: hidden 을 쓰지 않는다 — .flow-row 의 화살표(::before/::after)를 clip 해버리기 때문.
+   대신 header 에 직접 border-top-radius 를 걸어 rounded corners 를 유지한다. */
+section .flow-box {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+section .flow-box > .header {
+  background: var(--navy);
+  color: #fff;
+  padding: 6px 12px;
+  font-weight: 700;
+  text-align: center;
+  font-size: 0.95em;
+  line-height: 1.3;
+  border-radius: 3px 3px 0 0;
+}
+section .flow-box > .body {
+  padding: 10px 14px;
+  flex: 1;
+  font-size: 0.88em;
+  line-height: 1.5;
+}
+section .flow-box > .body > *:first-child { margin-top: 0; }
+section .flow-box > .body > *:last-child { margin-bottom: 0; }
+section .flow-box > .body ul {
+  margin: 2px 0;
+  padding-left: 0;
+}
+
+/* ----- .flow-row : flow-box 들을 가로로 나열 + 화살표 자동 ----- */
+section .flow-row {
+  display: flex;
+  align-items: stretch;
+  gap: 28px;
+  margin: 12px 0;
+}
+section .flow-row > .flow-box {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}
+/* 두 번째 박스부터 앞에 화살표(선 + 삼각형) 자동 생성 */
+section .flow-row > .flow-box:not(:first-child)::before {
+  content: "";
+  position: absolute;
+  left: -24px;
+  top: 50%;
+  width: 16px;
+  height: 2px;
+  background: var(--navy);
+  transform: translateY(-1px);
+}
+section .flow-row > .flow-box:not(:first-child)::after {
+  content: "";
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid var(--navy);
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+}
