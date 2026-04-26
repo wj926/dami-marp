@@ -220,7 +220,7 @@ def main() -> None:
     new_content, missing = substitute_placeholders(content, refs)
 
     if missing:
-        print(f"[build] ⚠️  누락된 인용 키: {sorted(set(missing))}")
+        print(f"[build] [WARN] 누락된 인용 키: {sorted(set(missing))}")
 
     new_content = substitute_mermaid_blocks(new_content, slides_path)
 
@@ -231,15 +231,15 @@ def main() -> None:
     output_path = slides_path.with_suffix(f".{args.format}")
     flag = f"--{args.format}"
 
-    theme_path = Path(__file__).resolve().parent.parent / "themes" / "dami-lab.css"
-    if not theme_path.exists():
-        sys.exit(f"ERROR: theme 파일이 없습니다: {theme_path}")
+    themes_dir = Path(__file__).resolve().parent.parent / "themes"
+    theme_files = sorted(themes_dir.glob("*.css"))
+    if not theme_files:
+        sys.exit(f"ERROR: theme 파일이 없습니다: {themes_dir}")
 
-    cmd = [
-        marp,
-        str(built_path),
-        flag,
-        "--theme-set", str(theme_path),
+    cmd = [marp, str(built_path), flag]
+    for tf in theme_files:
+        cmd += ["--theme-set", str(tf)]
+    cmd += [
         "--allow-local-files",
         "-o", str(output_path),
     ]
@@ -252,7 +252,7 @@ def main() -> None:
     if result.returncode != 0:
         sys.exit(result.returncode)
 
-    print(f"[build] ✅ 완료: {output_path}")
+    print(f"[build] [OK] 완료: {output_path}")
 
 
 if __name__ == "__main__":
